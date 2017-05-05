@@ -1,0 +1,78 @@
+```
+
+#include <iostream>
+using namespace std;
+class UIButton;
+struct NSObject {
+    bool init() {
+        return true;
+    };
+};
+
+struct Hero : public NSObject {
+    void move(UIButton *button) {
+        cout << "英雄移动" << endl;
+    }
+};
+
+struct Plane : public NSObject {
+    void fly(UIButton *button) {
+        cout << "飞机飞行" << endl;
+    }
+};
+
+//定义一个函数指针，里面有接触到多态；这两个是本节的关键
+typedef void (NSObject::*FUNC)(UIButton*);
+#define selector(SET) (FUNC)&SET
+
+struct UIButton : public NSObject {
+private:
+    int _tag;
+    NSObject *_target;
+    FUNC _func;
+public:
+    static UIButton* buttonWithTarget(NSObject *target, FUNC func) {
+        UIButton *m_button = new UIButton;
+        if (m_button->initWithTarget(target, func)) {
+            return m_button;
+        }
+        delete m_button;
+        return NULL;
+    }
+    
+    bool initWithTarget(NSObject *target, FUNC func) {
+        if (!NSObject::init()) return false;
+        //初始化子类自己的东西
+        _target = target;
+        _func = func;
+        return true;
+    }
+    
+    int getTag(){
+        return _tag;
+    }
+    void setTag(int tag) {
+        _tag = tag;
+    }
+    
+    //模拟点中
+    void touch() {
+        (_target->*_func)(this);
+    }
+};
+
+
+int main() {
+    Hero *hero = new Hero;
+    Plane *plane = new Plane;
+    
+    UIButton *button = UIButton::buttonWithTarget(hero, selector(Hero::move));
+    button->touch();
+    
+    return true;
+}
+
+```
+
+
+
