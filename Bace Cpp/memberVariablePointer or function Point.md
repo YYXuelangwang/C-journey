@@ -214,6 +214,7 @@ struct Plane : public NSObject{
     }
 };
 
+//这是本节的重点，定义这种类型的函数指针
 typedef void (NSObject::*FUNC)(UIButton *);
 
 struct UIButton : public NSObject {
@@ -253,6 +254,7 @@ struct UIButton : public NSObject {
     }
 };
 
+//这是本节的重点
 #define selector(SEL) (FUNC)(&SEL)
 
 int main(){
